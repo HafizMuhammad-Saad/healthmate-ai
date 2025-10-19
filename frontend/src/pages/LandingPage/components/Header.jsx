@@ -69,7 +69,7 @@ const Header = () => {
                                 >
                                     Home
                                 </Link>
-                                <Link
+                                {/* <Link
                                     to="/about"
                                     className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                                         isActive('/about')
@@ -78,7 +78,7 @@ const Header = () => {
                                     }`}
                                 >
                                     About
-                                </Link>
+                                </Link> */}
                                 <div className="flex items-center space-x-3 ml-6 pl-6 border-l border-gray-200">
                                     <Link
                                         to="/login"

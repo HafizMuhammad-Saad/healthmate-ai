@@ -16,6 +16,7 @@ import AIInsights from "./pages/Insights/AIInsights";
 import ReportsHistory from "./pages/Reports/ReportsHistory";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+import Comingsoon from "./pages/Comingsoon";
 
 import DashboardLayout from "./components/Layout/DashboardLayout";
 
@@ -40,6 +41,8 @@ function App() {
             <Route path="/vitals" element={<VitalsTracker />} />
             <Route path="/insights" element={<AIInsights />} />
             <Route path="/reports" element={<ReportsHistory />} />
+            <Route path="/trends" element={<Comingsoon />} />
+
           </Route>
 
           {/* Catch-all route */}

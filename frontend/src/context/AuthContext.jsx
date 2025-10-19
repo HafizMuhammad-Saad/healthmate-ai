@@ -56,7 +56,7 @@ export const AuthProvider = ({children}) => {
   setUser(null);
   setIsAuthenticated(false);
 
-  window.location.href = '/login'; // ← Safe if provider outside Router
+  window.location.href = '/'; // ← Safe if provider outside Router
 };
 
 
