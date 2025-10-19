@@ -49,6 +49,7 @@ const Dashboard = () => {
         }
     };
 
+    // eslint-disable-next-line no-unused-vars
     const StatCard = ({ icon: Icon, title, value, subtitle, color, bgColor = "bg-white" }) => (
         <div className={`${bgColor} rounded-2xl shadow-sm p-6 border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}>
             <div className="flex items-start justify-between">

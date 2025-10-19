@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 const Header = () => {
-    const { user, isAuthenticated, logout } = useAuth();
+    const { isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

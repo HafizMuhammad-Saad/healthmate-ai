@@ -8,7 +8,7 @@ import SplitText from '../../../../Reactbits/SplitText/SplitText'
 import ShinyText from '../../../../Reactbits/ShinyText/ShinyText'
 
 const Hero = () => {
-    const {user, isAuthenticated}  = useAuth()
+    const { isAuthenticated}  = useAuth()
     const navigate = useNavigate()
 
     const stats = [

@@ -118,6 +118,7 @@ const VitalsTracker = () => {
         }
     };
 
+    // eslint-disable-next-line no-unused-vars
     const StatCard = ({ icon: Icon, title, value, subtitle, color }) => (
         <div className="bg-white rounded-lg shadow-md p-6 border-l-4" style={{ borderLeftColor: color }}>
             <div className="flex items-center justify-between">
