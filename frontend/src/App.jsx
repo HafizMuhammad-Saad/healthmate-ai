@@ -17,6 +17,7 @@ import ReportsHistory from "./pages/Reports/ReportsHistory";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import Comingsoon from "./pages/Comingsoon";
+import Profile from "./pages/Profile";
 
 import DashboardLayout from "./components/Layout/DashboardLayout";
 
@@ -42,6 +43,7 @@ function App() {
             <Route path="/insights" element={<AIInsights />} />
             <Route path="/reports" element={<ReportsHistory />} />
             <Route path="/trends" element={<Comingsoon />} />
+            <Route path="/profile" element={<Profile />} />
 
           </Route>
 

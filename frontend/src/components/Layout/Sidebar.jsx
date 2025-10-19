@@ -86,7 +86,7 @@ const Sidebar = () => {
     return (
         <>
             {/* Mobile menu button */}
-            <div className="lg:hidden fixed top-20 left-4 z-50">
+            <div className="lg:hidden fixed top-20 left-4 -z-50">
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className="p-3 bg-white rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200"
@@ -107,7 +107,7 @@ const Sidebar = () => {
             `}>
                 <div className="flex flex-col h-full">
                     {/* Logo */}
-                    <div className="flex items-center justify-center h-20 px-6 bg-gradient-to-r from-teal-500 via-teal-600 to-cyan-500">
+                    {/* <div className="flex items-center justify-center h-20 px-6 bg-gradient-to-r from-teal-500 via-teal-600 to-cyan-500">
                         <div className="flex items-center space-x-3">
                             <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
                                 <Heart className="h-7 w-7 text-white" />
@@ -117,7 +117,7 @@ const Sidebar = () => {
                                 <div className="text-sm opacity-90 font-medium">Sehat ka Smart Dost</div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Navigation */}
                     <nav className="flex-1 px-6 py-8 space-y-3">
@@ -138,7 +138,7 @@ const Sidebar = () => {
                                     onClick={() => setIsOpen(false)}
                                 >
                                     <div className={`
-                                        flex items-center justify-center w-10 h-10 rounded-xl mr-4 transition-all duration-200
+                                        flex items-center justify-center w-4 h-10 rounded-xl mr-4 transition-all duration-200
                                         ${isActive ? item.bgColor : 'bg-gray-50 group-hover:bg-gray-100'}
                                     `}>
                                         <Icon className={`h-5 w-5 ${isActive ? item.color : 'text-gray-500'}`} />
