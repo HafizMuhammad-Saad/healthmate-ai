@@ -179,7 +179,7 @@ const ReportsHistory = () => {
                     <div className="space-y-4">
                         {filteredReports.map((report) => (
                             <div key={report._id} className="bg-white rounded-lg shadow-md p-6">
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between flex-col sm:flex-row">
                                     <div className="flex items-center space-x-4">
                                         <div className="flex-shrink-0">
                                             {report.fileType === 'image' ? (

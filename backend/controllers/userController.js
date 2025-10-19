@@ -37,35 +37,35 @@ exports.updateProfile = async (req, res) => {
 };
 
 // @desc delete resume
-exports.deleteResume = async (req, res) => {
-    try {
-        const {resumeUrl} = req.body;
+// exports.deleteResume = async (req, res) => {
+//     try {
+//         const {resumeUrl} = req.body;
 
-        const fileName = resumeUrl?.split("/").pop();
+//         const fileName = resumeUrl?.split("/").pop();
 
-        const user = await User.findById(req.user._id);
-        if (!user) return res.status(404).json({ message: "User not found" });
+//         const user = await User.findById(req.user._id);
+//         if (!user) return res.status(404).json({ message: "User not found" });
 
-        if (user.role === "jobseeker") {
-            return res.status(403).json({ message: "Only jobseeker can delete resumes" });
-        }
+//         if (user.role === "jobseeker") {
+//             return res.status(403).json({ message: "Only jobseeker can delete resumes" });
+//         }
 
-        const filePath = path.join(__dirname, "../uploads", fileName);
+//         const filePath = path.join(__dirname, "../uploads", fileName);
 
-        //check if the file exists and then delete
-        if (fs.existsSync(filePath))  {
-            fs.unlinkSync(filePath); //delete the file
-        }
+//         //check if the file exists and then delete
+//         if (fs.existsSync(filePath))  {
+//             fs.unlinkSync(filePath); //delete the file
+//         }
         
-        //set the user resume to an empty string
-        user.resume = "";
-        await user.save();
-        res.json({ message: "Resume deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+//         //set the user resume to an empty string
+//         user.resume = "";
+//         await user.save();
+//         res.json({ message: "Resume deleted successfully" });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
         
-    }
-};
+//     }
+// };
 
 // @desc get public profile
 exports.getPublicProfile = async (req, res) => {

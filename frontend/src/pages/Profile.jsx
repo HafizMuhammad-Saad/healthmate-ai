@@ -5,11 +5,10 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const Profile = () => {
-    const { user, setUser } = useAuth();
+    const { user, updateUser } = useAuth();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        dob: '',
     });
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
@@ -21,7 +20,6 @@ const Profile = () => {
             setFormData({
                 name: user.name || '',
                 email: user.email || '',
-                dob: user.dob || '',
             });
             setLoading(false);
         }
@@ -41,7 +39,13 @@ const Profile = () => {
                 headers: { Authorization: `Bearer ${token}` }
             };
             const res = await axios.put(`${baseURL}/user/profile`, formData, config);
-            setUser(res.data.user);
+            updateUser(res.data);
+
+             setFormData({
+            name: res.data.name || '',
+            email: res.data.email || '',
+            dob: res.data.dob || ''
+        });
             toast.success('Profile updated successfully!');
         } catch (error) {
             console.error('Profile update error:', error);
@@ -100,13 +104,13 @@ const Profile = () => {
                                     value={formData.email}
                                     onChange={handleChange}
                                     className="w-full outline-none text-gray-700"
-                                    required
+                                    readOnly
                                 />
                             </div>
                         </div>
                     </div>
 
-                    <div>
+                    {/* <div>
                         <label className="block text-gray-700 text-sm mb-1">Date of Birth</label>
                         <div className="flex items-center border rounded-lg p-2">
                             <Calendar className="text-gray-400 mr-2" />
@@ -118,7 +122,7 @@ const Profile = () => {
                                 className="w-full outline-none text-gray-700"
                             />
                         </div>
-                    </div>
+                    </div> */}
 
                     <button
                         type="submit"
