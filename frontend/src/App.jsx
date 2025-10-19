@@ -32,24 +32,23 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
 
           {/* Protected Routes inside Dashboard Layout */}
-          <Route
-            element={
-                <DashboardLayout />
-            }
-          >
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/upload" element={<UploadReport />} />
-            <Route path="/vitals" element={<VitalsTracker />} />
-            <Route path="/insights" element={<AIInsights />} />
-            <Route path="/reports" element={<ReportsHistory />} />
-            <Route path="/trends" element={<Comingsoon />} />
-            <Route path="/profile" element={<Profile />} />
-
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/upload" element={<UploadReport />} />
+              <Route path="/vitals" element={<VitalsTracker />} />
+              <Route path="/insights" element={<AIInsights />} />
+              <Route path="/reports" element={<ReportsHistory />} />
+              <Route path="/trends" element={<Comingsoon />} />
+              <Route path="/profile" element={<Profile />} />
+            </Route>
           </Route>
 
           {/* Catch-all route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+
 
         <Toaster
           toastOptions={{

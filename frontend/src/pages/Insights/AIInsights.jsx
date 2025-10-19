@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Brain, Lightbulb, TrendingUp, AlertCircle, Heart, Activity } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import AIChat from './AiChat';
 
 const AIInsights = () => {
     const [insights, setInsights] = useState(null);
@@ -60,6 +61,7 @@ const AIInsights = () => {
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+               
                 {insights ? (
                     <div className="space-y-8">
                         {/* Main Insights */}
@@ -217,6 +219,7 @@ const AIInsights = () => {
                         </div>
                     </div>
                 )}
+            
             </div>
         </div>
     );
