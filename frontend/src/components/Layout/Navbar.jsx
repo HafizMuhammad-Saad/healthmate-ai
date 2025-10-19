@@ -83,12 +83,12 @@ const Navbar = () => {
                                 </div>
 
                                 {/* Notifications */}
-                                <button className="relative p-3 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-teal-600 transition-all duration-200">
+                                {/* <button className="relative p-3 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-teal-600 transition-all duration-200">
                                     <Bell className="w-5 h-5" />
                                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center font-medium">
                                         3
                                     </span>
-                                </button>
+                                </button> */}
 
                                 {/* Profile Menu */}
                                 <div className="relative">
