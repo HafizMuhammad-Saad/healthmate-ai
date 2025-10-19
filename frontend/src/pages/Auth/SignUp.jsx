@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import {User, Mail, Lock, Eye, Upload, EyeOff, Loader, AlertCircle, CheckCircle, UserCheck, Building2} from 'lucide-react'
 import {  validateEmail, validatePassword } from '../../utils/helper';
-import uploadImage from '../../utils/uploadImage';
+// import uploadImage from '../../utils/uploadImage';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import { useAuth } from '../../context/AuthContext';
@@ -125,10 +125,10 @@ const SignUp = () => {
         try {
             let avatarUrl = "";
 
-            if (formData.avatar) {
-              const imgUploadRes = await uploadImage(formData.avatar);
-              avatarUrl = imgUploadRes.imageUrl || "";
-            }
+            // if (formData.avatar) {
+            //   const imgUploadRes = await uploadImage(formData.avatar);
+            //   avatarUrl = imgUploadRes.imageUrl || "";
+            // }
 
             const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
               name: formData.fullName,
