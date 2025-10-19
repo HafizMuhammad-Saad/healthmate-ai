@@ -34,50 +34,103 @@ const upload = multer({
 // =============================
 // Upload Report
 // =============================
+// const uploadReport = async (req, res) => {
+//   try {
+//     if (!req.file)
+//       return res.status(400).json({ success: false, message: "No file uploaded" });
+
+//     const userId = req.user._id;
+//     const file = req.file;
+//     const fileType = file.mimetype.startsWith("image/") ? "image" : "pdf";
+
+//     // ✅ Upload to Cloudinary
+//     const uploadResult = await new Promise((resolve, reject) => {
+//       const stream = cloudinary.uploader.upload_stream(
+//         {
+//           folder: "healthmate-reports",
+//           resource_type: "auto",
+//           access_mode: "public",
+//           public_id: `${userId}_${Date.now()}`,
+//           format: fileType === "pdf" ? "pdf" : undefined,
+//         },
+//         (err, result) => (err ? reject(err) : resolve(result))
+//       );
+//       stream.end(file.buffer);
+//     });
+
+//     // ✅ Save metadata only (AI handles extraction later)
+//     const report = await Report.create({
+//       userId,
+//       fileName: file.originalname,
+//       fileUrl: uploadResult.secure_url,
+//       fileType,
+//       cloudinaryPublicId: uploadResult.public_id,
+//       analysisStatus: "pending",
+//     });
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Report uploaded successfully",
+//       data: {
+//         reportId: report._id,
+//         fileName: report.fileName,
+//         fileUrl: report.fileUrl,
+//         fileType: report.fileType,
+//         uploadedAt: report.createdAt,
+//       },
+//     });
+//   } catch (err) {
+//     console.error("Upload error:", err);
+//     res.status(500).json({
+//       success: false,
+//       message: "Error uploading report",
+//       error: err.message,
+//     });
+//   }
+// };
+
 const uploadReport = async (req, res) => {
   try {
-    if (!req.file)
+    if (!req.file) {
       return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
 
     const userId = req.user._id;
     const file = req.file;
     const fileType = file.mimetype.startsWith("image/") ? "image" : "pdf";
 
-    // ✅ Upload to Cloudinary
     const uploadResult = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
           folder: "healthmate-reports",
-          resource_type: "auto",
+          resource_type: "auto", // Keep this as auto
           access_mode: "public",
           public_id: `${userId}_${Date.now()}`,
-          format: fileType === "pdf" ? "pdf" : undefined,
         },
         (err, result) => (err ? reject(err) : resolve(result))
       );
       stream.end(file.buffer);
     });
 
-    // ✅ Save metadata only (AI handles extraction later)
+    // ✅ Save metadata INCLUDING the resource_type returned by Cloudinary
     const report = await Report.create({
       userId,
       fileName: file.originalname,
       fileUrl: uploadResult.secure_url,
       fileType,
       cloudinaryPublicId: uploadResult.public_id,
+      // ✨ SAVE THIS VALUE FROM CLOUDINARY'S RESPONSE
+      cloudinaryResourceType: uploadResult.resource_type, 
       analysisStatus: "pending",
     });
 
     res.status(201).json({
-      success: true,
-      message: "Report uploaded successfully",
-      data: {
-        reportId: report._id,
-        fileName: report.fileName,
-        fileUrl: report.fileUrl,
-        fileType: report.fileType,
-        uploadedAt: report.createdAt,
-      },
+        success: true,
+        message: "Report uploaded successfully",
+        data: {
+            reportId: report._id,
+            //... other data
+        }
     });
   } catch (err) {
     console.error("Upload error:", err);
@@ -88,7 +141,6 @@ const uploadReport = async (req, res) => {
     });
   }
 };
-
 // =============================
 // Get User Reports
 // =============================
@@ -133,12 +185,14 @@ const deleteReport = async (req, res) => {
     const userId = req.user._id;
 
     const report = await Report.findOne({ _id: reportId, userId });
-    if (!report)
+    if (!report) {
       return res.status(404).json({ success: false, message: "Report not found" });
+    }
 
     if (report.cloudinaryPublicId) {
+      // ✅ Use the SAVED resource_type for reliable deletion
       await cloudinary.uploader.destroy(report.cloudinaryPublicId, {
-        resource_type: report.fileType === "image" ? "image" : "raw",
+        resource_type: report.cloudinaryResourceType || (report.fileType === 'image' ? 'image' : 'raw'),
       });
     }
 

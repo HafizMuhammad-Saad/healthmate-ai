@@ -1,44 +1,44 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { TrendingUp, Users, Briefcase, Target } from 'lucide-react'
+import { TrendingUp, Users, Briefcase, Target, Activity, HeartPulse, Brain, UserCheck } from 'lucide-react'
 
 const Analytics = () => {
 
     const stats = [
-        {
-            icon: Users,
-            value: '10,000+',
-            title: 'Active Users',
-            growth: '+20%',
-            color: 'purple',
-            percentage: '75%'
-        },
-        {
-            icon: Briefcase,
-            value: '1,000+',
-            title: 'Companies',
-            growth: '-5%',
-            color: 'blue',
-            percentage: '25%'
+  {
+    icon: Activity,
+    value: "5,000+",
+    title: "Health Reports Analyzed",
+    growth: "+15%",
+    color: "blue",
+    percentage: "70%",
+  },
+  {
+    icon: HeartPulse,
+    value: "12,000+",
+    title: "Vitals Tracked",
+    growth: "+25%",
+    color: "green",
+    percentage: "80%",
+  },
+  {
+    icon: Brain,
+    value: "3,500+",
+    title: "AI Health Insights Generated",
+    growth: "+30%",
+    color: "purple",
+    percentage: "90%",
+  },
+  {
+    icon: UserCheck,
+    value: "98%",
+    title: "User Satisfaction Rate",
+    growth: "+8%",
+    color: "orange",
+    percentage: "95%",
+  },
+];
 
-        },
-        {
-            icon: TrendingUp,
-            value: '50,000+',
-            title: 'Jobs Posted',
-            growth: '+10%',
-            color: 'orange',
-            percentage: '50%'
-        },
-        {   icon: Target,
-            value: '95%',
-            title: 'Job Success Rate',
-            growth: '+5%',
-            color: 'green',
-            percentage: '90%'
-        },
-
-    ];
 
   return (
     <section className='relative py-24 overflow-hidden'>

@@ -68,32 +68,3 @@ export const NAVIGATION_MENU = [
     {id: "company-profile", name: "Company Profile", icon: Building2},
 
 ]
-
-export const CATEGORIES = [
-    {value: "Engineering", label: "Engineering"},
-    {value: "Marketing", label: "Marketing"},
-    {value: "Sales", label: "Sales"},
-    {value: "Design", label: "Design"},
-    {value: "Finance", label: "Finance"},
-    {value: "Human Resources", label: "Human Resources"},
-    {value: "Customer Support", label: "Customer Support"},
-    {value: "IT", label: "IT"},
-    {value: "Other", label: "Other"}
-
-]
-
-export const JOB_TYPES = [
-    {value: "Full-Time", label: "Full-Time"},
-    {value: "Part-Time", label: "Part-Time"},
-    {value: "Contract", label: "Contract"},
-    {value: "Internship", label: "Internship"},
-    {value: "Remote", label: "Remote"},
-]
-
-export const SALARY_RANGES = [
-    "Less than 25k",
-    "25k - 50k",
-    "50k - 75k",
-    "75k - 100k",
-    "100k+"
-]

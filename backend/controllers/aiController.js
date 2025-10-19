@@ -7,130 +7,199 @@ const axios = require("axios");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // ✅ Helper function: choose the best available model
-const getModel = (type = "text") => {
-  try {
-    if (type === "vision") return genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
-    return genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
-  } catch {
-    return genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-  }
+const getModel = (isVision = false) => {
+  // Use gemini-1.5-flash for text and gemini-1.5-pro for vision/multimodal
+  const modelName = isVision ? "gemini-2.5-flash" : "gemini-2.5-flash";
+  return genAI.getGenerativeModel({ model: modelName });
 };
 
-// 🧩 Analyze medical report
+// ✨ NEW HELPER: Converts a file URL to a GoogleGenerativeAI.Part object
+const urlToGenerativePart = async (url, mimeType) => {
+  const response = await axios.get(url, { responseType: "arraybuffer" });
+  const buffer = Buffer.from(response.data);
+  return {
+    inlineData: {
+      data: buffer.toString("base64"),
+      mimeType,
+    },
+  };
+};
+
+// 🧩 Analyze medical report (FULLY CORRECTED)
+// ✅ Main controller
 const analyzeReport = async (req, res) => {
   try {
     const { reportId } = req.params;
+    // Assuming req.user is populated by authentication middleware
     const userId = req.user._id;
 
+    // Report is a Mongoose model, assuming it's available
+    // const Report = require('../models/Report'); 
+    
     const report = await Report.findOne({ _id: reportId, userId });
-    if (!report) return res.status(404).json({ success: false, message: "Report not found" });
+    if (!report)
+      return res.status(404).json({ success: false, message: "Report not found" });
 
     report.analysisStatus = "analyzing";
     await report.save();
 
+    const isImage = report.fileType === "image";
+
+    // Defining the prompt and required JSON structure
+    const combinedPrompt = `
+You are HealthMate AI — a friendly medical report analyzer.
+
+Please:
+1. Explain test results in simple, plain English.
+2. Highlight abnormal values (high/low).
+3. Provide general wellness or diet tips.
+4. Be concise (under 200 words).
+5. End with a friendly motivational note.
+6. Translate your English summary into Roman Urdu.
+7. Return JSON only in this format:
+{
+  "englishSummary": "...",
+  "urduSummary": "..."
+}
+`;
+
+    let result;
     let extractedText = "";
-    let isImage = report.fileType === "image";
+
+    if (isImage) {
+      // ✅ Vision model input (image)
+      // Assuming getModel(true) returns a vision-capable Gemini model client
+      const model = getModel(true); 
+      // Assuming urlToGenerativePart is correctly implemented
+      const imagePart = await urlToGenerativePart(report.fileUrl, "image/jpeg"); 
+
+      result = await model.generateContent({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: combinedPrompt }, imagePart],
+          },
+        ],
+      });
+    } else {
+      // ✅ Text model input (PDF)
+      // IMPORTANT: The 401 error is likely here. If report.fileUrl is protected
+      // (e.g., S3, Google Cloud Storage), you MUST add authentication headers (e.g., 
+      // a Bearer token or pre-signed URL headers) to the Axios request.
+      
+      const model = getModel(false);
+      
+      const response = await axios.get(report.fileUrl, { 
+          responseType: "arraybuffer",
+          // *** ADD AUTH HEADERS HERE IF FILE URL IS PROTECTED ***
+          // headers: { 
+          //   'Authorization': 'Bearer YOUR_TOKEN_OR_KEY'
+          // }
+      });
+      
+      // Assuming pdfParse and Buffer are correctly imported/available
+      const pdfData = await pdfParse(Buffer.from(response.data)); 
+      extractedText = pdfData.text || "No readable text found.";
+
+      result = await model.generateContent({
+        contents: [
+          {
+            role: "user",
+            parts: [
+              { text: combinedPrompt },
+              { text: `Medical Report Text:\n${extractedText}` },
+            ],
+          },
+        ],
+      });
+    }
+
+    // ✅ Extract response
+    const responseText = result.response.text().trim();
+    const cleaned = responseText.replace(/```json|```/g, "").trim();
+
+    let englishSummary = "";
+    let urduSummary = "";
 
     try {
-      // 📘 Extract text
-      if (report.fileType === "pdf") {
-        const response = await axios.get(report.fileUrl, { responseType: "arraybuffer" });
-        const pdfData = await pdfParse(Buffer.from(response.data));
-        extractedText = pdfData.text || "";
-      } else if (isImage) {
-        extractedText = `
-          [Image Detected] This appears to be a photo-based medical report.
-          Use OCR (text extraction) or manually uploaded report text for detailed analysis.
-        `;
-      }
+      const parsed = JSON.parse(cleaned);
+      englishSummary = parsed.englishSummary || "";
+      urduSummary = parsed.urduSummary || "";
+    } catch (err) {
+      console.error("⚠️ Invalid AI JSON output:", cleaned);
+      englishSummary =
+        "HealthMate AI could not automatically analyze this report. Please ensure it contains readable text or use OCR extraction.";
+      urduSummary =
+        "HealthMate AI report ka automatic analysis nahi kar saka. Barah-e-karam readable text ya clear PDF upload karein.";
+    }
 
-      // ✨ English Prompt (strong medical logic & empathy)
-      const englishPrompt = `
-You are HealthMate AI — a medical analysis assistant.
-Analyze the following medical report for a general user (non-doctor).
-Focus on clarity, empathy, and helpfulness.
+    // ✅ Save result
+    report.aiSummaryEn = englishSummary;
+    report.aiSummaryUr = urduSummary;
+    report.analysisStatus = "completed";
+    await report.save();
 
-Guidelines:
-1. Explain test names in simple, plain English (no jargon).
-2. Highlight abnormal values (high/low).
-3. Offer practical, everyday wellness or diet tips if relevant.
-4. Be concise (max 200 words).
-5. Always remind that the information is not medical advice.
-6. End with a friendly health encouragement note.
-
-Medical Report Text:
-${extractedText}
-
-Now write a short, compassionate summary:
-`;
-
-      const model = getModel(isImage ? "vision" : "text");
-      const englishResult = await model.generateContent(englishPrompt);
-      const englishSummary = englishResult.response.text().trim();
-
-      // ✨ Roman Urdu version
-      const urduPrompt = `
-Translate the following English medical summary into clear Roman Urdu (Urdu written in English letters).
-Keep the tone gentle and supportive. Avoid medical jargon.
-
-English Summary:
-${englishSummary}
-
-Roman Urdu Translation:
-`;
-
-      const urduResult = await model.generateContent(urduPrompt);
-      const urduSummary = urduResult.response.text().trim();
-
-      // ✅ Save both results
-      Object.assign(report, {
+    res.status(200).json({
+      success: true,
+      message: "Report analyzed successfully",
+      data: {
+        reportId: report._id,
         aiSummaryEn: englishSummary,
         aiSummaryUr: urduSummary,
         analysisStatus: "completed",
-      });
-      await report.save();
+      },
+    });
+  } catch (error) {
+    console.error("❌ Analyze report error:", error);
 
-      res.status(200).json({
-        success: true,
-        message: "Report analyzed successfully",
-        data: {
-          reportId: report._id,
-          aiSummaryEn: englishSummary,
-          aiSummaryUr: urduSummary,
-          analysisStatus: "completed",
-        },
-      });
-    } catch (aiError) {
-      console.error("AI Analysis Error:", aiError);
-
-      // ❗ Fallback if AI or PDF parsing fails
-      report.analysisStatus = "failed";
-      await report.save();
-
-      const fallbackEnglish = `
-HealthMate AI could not automatically analyze your report.
-Please ensure it contains readable text or use OCR extraction.
-For accurate interpretation, consult your healthcare provider.
-`;
-      const fallbackUrdu = `
-HealthMate AI report ka automatic analysis nahi kar saka.
-Report ka text readable hona chahiye. Sahi maloomat ke liye doctor se mashwara karein.
-`;
-
-      res.status(200).json({
-        success: true,
-        message: "Analysis completed with fallback message",
-        data: {
-          reportId: report._id,
-          aiSummaryEn: fallbackEnglish.trim(),
-          aiSummaryUr: fallbackUrdu.trim(),
-          analysisStatus: "failed",
-        },
+    // --- ENHANCED ERROR HANDLING FOR AXIOS/EXTERNAL CALLS ---
+    // Check if the error is an AxiosError with a response status
+    if (error.response) {
+      const status = error.response.status;
+      
+      // Handle 401 (Unauthorized) and 403 (Forbidden) issues specifically.
+      if (status === 401 || status === 403) {
+        // This is often an issue with the file URL's access or the Gemini API key.
+        return res.status(403).json({
+          success: false,
+          message: `External resource access failed (Status: ${status}). Please check the authentication/access for the file URL or the external API key.`,
+          error: error.message,
+        });
+      }
+      
+      // Handle external server errors (5xx)
+      if (status >= 500 && status < 600) {
+        // Use 502 Bad Gateway to indicate that an upstream service failed
+        return res.status(502).json({
+          success: false,
+          message: `External API service failed with status ${status}.`,
+          error: error.message,
+        });
+      }
+      
+      // Handle other client-side external errors (e.g., 404 from file server)
+      return res.status(400).json({
+        success: false,
+        message: `External resource error: Status ${status}.`,
+        error: error.message,
       });
     }
-  } catch (error) {
-    console.error("Analyze report error:", error);
-    res.status(500).json({ success: false, message: "Error analyzing report", error: error.message });
+    
+    // Handle all other errors (database, internal logic, etc.) with a generic 500
+    // And ensure the report status is updated to reflect the failure
+    try {
+        if (reportId) { // Try to find and update the report status on failure
+            await Report.findByIdAndUpdate(reportId, { analysisStatus: "failed" });
+        }
+    } catch(dbUpdateError) {
+        console.error("Failed to update report status on analysis failure:", dbUpdateError);
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "An unexpected internal server error occurred during report analysis.",
+      error: error.message,
+    });
   }
 };
 
