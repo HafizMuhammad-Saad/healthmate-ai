@@ -9,10 +9,10 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // ✅ Helper function: choose the best available model
 const getModel = (type = "text") => {
   try {
-    if (type === "vision") return genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    return genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    if (type === "vision") return genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
+    return genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
   } catch {
-    return genAI.getGenerativeModel({ model: "gemini-1.0-pro" });
+    return genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
   }
 };
 
@@ -204,4 +204,51 @@ Generate an insightful health overview:
   }
 };
 
-module.exports = { analyzeReport, getHealthInsights };
+// 💬 AI Chat Assistant
+const chatWithAI = async (req, res) => {
+  try {
+    const { message, context } = req.body;
+    if (!message) {
+      return res.status(400).json({ success: false, message: "Message is required" });
+    }
+
+    const model = getModel("text");
+
+    const chatPrompt = `
+You are HealthMate AI, a friendly virtual health assistant.
+Use empathy, kindness, and accuracy. Keep replies short and practical (under 150 words).
+If the user asks about medical symptoms, include a clear disclaimer:
+"This is general information only. Please consult a healthcare provider for personal advice."
+
+Previous Context (if any):
+${context || "None"}
+
+User Message:
+${message}
+
+AI Response:
+`;
+
+    const aiResponse = await model.generateContent(chatPrompt);
+    const reply = aiResponse.response.text().trim();
+
+    res.status(200).json({
+      success: true,
+      data: {
+        reply,
+        timestamp: new Date(),
+      },
+    });
+  } catch (error) {
+    console.error("AI Chat Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error in AI Chat",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { analyzeReport, getHealthInsights, chatWithAI };
+
+

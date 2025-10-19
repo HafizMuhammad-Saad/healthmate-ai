@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import {User, Mail, Lock, Eye, Upload, EyeOff, Loader, AlertCircle, CheckCircle, UserCheck, Building2} from 'lucide-react'
-import { validateAvatar, validateEmail, validatePassword } from '../../utils/helper';
+import {  validateEmail, validatePassword } from '../../utils/helper';
 import uploadImage from '../../utils/uploadImage';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
@@ -56,40 +56,40 @@ const SignUp = () => {
 
 
 
-    const handleAvatarChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const error = validateAvatar(file);
-            if (error) {
-                setFormState(prev => ({
-                    ...prev,
-                    errors: {
-                        ...prev.errors,
-                        avatar: error
-                    }
-                }));
-                return;
-            } 
+    // const handleAvatarChange = (e) => {
+    //     const file = e.target.files[0];
+    //     if (file) {
+    //         const error = validateAvatar(file);
+    //         if (error) {
+    //             setFormState(prev => ({
+    //                 ...prev,
+    //                 errors: {
+    //                     ...prev.errors,
+    //                     avatar: error
+    //                 }
+    //             }));
+    //             return;
+    //         } 
 
-            setFormData(prev => ({
-                ...prev,
-                avatar: file
-            }));
+    //         setFormData(prev => ({
+    //             ...prev,
+    //             avatar: file
+    //         }));
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setFormState(prev => ({
-                    ...prev,
-                    avatarPreview: e.target.result,
-                    errors: {
-                        ...prev.errors,
-                        avatar: ''
-                    }
-                }));
-            }
-            reader.readAsDataURL(file);
-        }
-    };
+    //         const reader = new FileReader();
+    //         reader.onload = (e) => {
+    //             setFormState(prev => ({
+    //                 ...prev,
+    //                 avatarPreview: e.target.result,
+    //                 errors: {
+    //                     ...prev.errors,
+    //                     avatar: ''
+    //                 }
+    //             }));
+    //         }
+    //         reader.readAsDataURL(file);
+    //     }
+    // };
 
     const validateForm = () => {
         const errors = {
@@ -317,7 +317,7 @@ const SignUp = () => {
         </div>
 
         {/* Avatar Upload */}
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-text mb-2">
             Profile Picture (optional)
           </label>
@@ -353,15 +353,15 @@ const SignUp = () => {
               {formState.errors.avatar}
             </p>
           )}
-        </div>
+        </div> */}
 
-
+{/* 
         {formState.errors.submit && (
           <p className="mt-2 text-sm text-red-600 flex items-center">
             <AlertCircle className="w-4 h-4 mr-1" />
             {formState.errors.submit}
           </p>
-        )}
+        )} */}
 
         {/* Submit Button */}
         <div>
