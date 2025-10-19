@@ -338,157 +338,197 @@ const VitalsTracker = () => {
                 </div>
             </div>
 
-            {/* Add Vital Modal */}
-            {showAddForm && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-xl font-semibold text-gray-900">Record Vitals</h2>
-                            <button
-                                onClick={() => setShowAddForm(false)}
-                                className="text-gray-400 hover:text-gray-600"
-                            >
-                                ×
-                            </button>
-                        </div>
-                        
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            {/* Blood Pressure */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Blood Pressure (mmHg)
-                                </label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <input
-                                        type="number"
-                                        placeholder="Systolic"
-                                        value={formData.systolic}
-                                        onChange={(e) => setFormData({...formData, systolic: e.target.value})}
-                                        className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                    <input
-                                        type="number"
-                                        placeholder="Diastolic"
-                                        value={formData.diastolic}
-                                        onChange={(e) => setFormData({...formData, diastolic: e.target.value})}
-                                        className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </div>
-                            </div>
+           {/* Add Vital Modal */}
+{showAddForm && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-gray-900">Record Vitals</h2>
+        <button
+          onClick={() => setShowAddForm(false)}
+          className="text-gray-400 hover:text-gray-600"
+        >
+          ×
+        </button>
+      </div>
 
-                            {/* Blood Sugar */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Blood Sugar (mg/dL)
-                                </label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <input
-                                        type="number"
-                                        placeholder="Blood Sugar Level"
-                                        value={formData.bloodSugar}
-                                        onChange={(e) => setFormData({...formData, bloodSugar: e.target.value})}
-                                        className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                    <select
-                                        value={formData.sugarType}
-                                        onChange={(e) => setFormData({...formData, sugarType: e.target.value})}
-                                        className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    >
-                                        <option value="fasting">Fasting</option>
-                                        <option value="random">Random</option>
-                                        <option value="post_meal">Post Meal</option>
-                                        <option value="hba1c">HbA1c</option>
-                                    </select>
-                                </div>
-                            </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
 
-                            {/* Other Vitals */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Weight (kg)
-                                    </label>
-                                    <input
-                                        type="number"
-                                        step="0.1"
-                                        value={formData.weight}
-                                        onChange={(e) => setFormData({...formData, weight: e.target.value})}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </div>
+        {/* 🩸 Blood Pressure */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Blood Pressure (mmHg)
+          </label>
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="number"
+              placeholder="Systolic"
+              value={formData.systolic}
+              onChange={(e) =>
+                setFormData({ ...formData, systolic: e.target.value })
+              }
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="number"
+              placeholder="Diastolic"
+              value={formData.diastolic}
+              onChange={(e) =>
+                setFormData({ ...formData, diastolic: e.target.value })
+              }
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            🩺 Normal range: <b>120/80 mmHg</b> (Systolic 90–140, Diastolic 60–90)
+          </p>
+        </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Heart Rate (bpm)
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={formData.pulse}
-                                        onChange={(e) => setFormData({...formData, pulse: e.target.value})}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </div>
+        {/* 🍬 Blood Sugar */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Blood Sugar (mg/dL)
+          </label>
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="number"
+              placeholder="Blood Sugar Level"
+              value={formData.bloodSugar}
+              onChange={(e) =>
+                setFormData({ ...formData, bloodSugar: e.target.value })
+              }
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <select
+              value={formData.sugarType}
+              onChange={(e) =>
+                setFormData({ ...formData, sugarType: e.target.value })
+              }
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="fasting">Fasting</option>
+              <option value="random">Random</option>
+              <option value="post_meal">Post Meal</option>
+              <option value="hba1c">HbA1c</option>
+            </select>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            🍭 Ideal fasting sugar: <b>70–100 mg/dL</b>, post-meal: <b>under 140 mg/dL</b>
+          </p>
+        </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Temperature (°F)
-                                    </label>
-                                    <input
-                                        type="number"
-                                        step="0.1"
-                                        value={formData.temperature}
-                                        onChange={(e) => setFormData({...formData, temperature: e.target.value})}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </div>
+        {/* ⚖️ Weight & ❤️ Heart Rate */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Weight (kg)
+            </label>
+            <input
+              type="number"
+              step="0.1"
+              value={formData.weight}
+              onChange={(e) =>
+                setFormData({ ...formData, weight: e.target.value })
+              }
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              ⚖️ Maintain a BMI between <b>18.5–24.9</b> for a healthy range
+            </p>
+          </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Oxygen Saturation (%)
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={formData.oxygenSaturation}
-                                        onChange={(e) => setFormData({...formData, oxygenSaturation: e.target.value})}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </div>
-                            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Heart Rate (bpm)
+            </label>
+            <input
+              type="number"
+              value={formData.pulse}
+              onChange={(e) =>
+                setFormData({ ...formData, pulse: e.target.value })
+              }
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              ❤️ Normal range: <b>60–100 bpm</b> (resting)
+            </p>
+          </div>
 
-                            {/* Notes */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Notes (optional)
-                                </label>
-                                <textarea
-                                    value={formData.notes}
-                                    onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                                    rows={3}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Any additional notes about your health today..."
-                                />
-                            </div>
+          {/* 🌡️ Temperature */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Temperature (°F)
+            </label>
+            <input
+              type="number"
+              step="0.1"
+              value={formData.temperature}
+              onChange={(e) =>
+                setFormData({ ...formData, temperature: e.target.value })
+              }
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              🌡️ Normal: <b>97°F – 99°F</b>
+            </p>
+          </div>
 
-                            {/* Submit */}
-                            <div className="flex space-x-4">
-                                <button
-                                    type="submit"
-                                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                                >
-                                    Save Reading
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowAddForm(false)}
-                                    className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+          {/* 🫁 Oxygen Saturation */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Oxygen Saturation (%)
+            </label>
+            <input
+              type="number"
+              value={formData.oxygenSaturation}
+              onChange={(e) =>
+                setFormData({ ...formData, oxygenSaturation: e.target.value })
+              }
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              🫁 Healthy level: <b>95–100%</b>
+            </p>
+          </div>
+        </div>
+
+        {/* 🗒️ Notes */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Notes (optional)
+          </label>
+          <textarea
+            value={formData.notes}
+            onChange={(e) =>
+              setFormData({ ...formData, notes: e.target.value })
+            }
+            rows={3}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Any additional notes about your health today..."
+          />
+        </div>
+
+        {/* ✅ Submit Buttons */}
+        <div className="flex space-x-4">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Save Reading
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowAddForm(false)}
+            className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
         </div>
     );
 };
